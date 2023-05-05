@@ -1,5 +1,7 @@
 import 'package:flutter_library_app/feature/books/books.dart';
 
+import '../model/books.dart';
+
 abstract class BooksRepository {
   Future<Books> loadBooks();
 
