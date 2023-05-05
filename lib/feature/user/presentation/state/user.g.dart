@@ -1,41 +1,40 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'books.dart';
+part of 'user.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_BooksStateLoading _$$_BooksStateLoadingFromJson(Map<String, dynamic> json) =>
-    _$_BooksStateLoading(
+_$_UserStateLoading _$$_UserStateLoadingFromJson(Map<String, dynamic> json) =>
+    _$_UserStateLoading(
       $type: json['runtimeType'] as String?,
     );
 
-Map<String, dynamic> _$$_BooksStateLoadingToJson(
-        _$_BooksStateLoading instance) =>
+Map<String, dynamic> _$$_UserStateLoadingToJson(_$_UserStateLoading instance) =>
     <String, dynamic>{
       'runtimeType': instance.$type,
     };
 
-_$_BooksStateData _$$_BooksStateDataFromJson(Map<String, dynamic> json) =>
-    _$_BooksStateData(
-      Books.fromJson(json['books'] as Map<String, dynamic>),
+_$_UserStateData _$$_UserStateDataFromJson(Map<String, dynamic> json) =>
+    _$_UserStateData(
+      User.fromJson(json['user'] as Map<String, dynamic>),
       $type: json['runtimeType'] as String?,
     );
 
-Map<String, dynamic> _$$_BooksStateDataToJson(_$_BooksStateData instance) =>
+Map<String, dynamic> _$$_UserStateDataToJson(_$_UserStateData instance) =>
     <String, dynamic>{
-      'books': instance.books,
+      'user': instance.user,
       'runtimeType': instance.$type,
     };
 
-_$_BooksStateError _$$_BooksStateErrorFromJson(Map<String, dynamic> json) =>
-    _$_BooksStateError(
+_$_UserStateError _$$_UserStateErrorFromJson(Map<String, dynamic> json) =>
+    _$_UserStateError(
       message: json['message'] as String?,
       $type: json['runtimeType'] as String?,
     );
 
-Map<String, dynamic> _$$_BooksStateErrorToJson(_$_BooksStateError instance) =>
+Map<String, dynamic> _$$_UserStateErrorToJson(_$_UserStateError instance) =>
     <String, dynamic>{
       'message': instance.message,
       'runtimeType': instance.$type,

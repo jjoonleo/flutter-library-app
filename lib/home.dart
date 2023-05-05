@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,11 +13,16 @@ class Home extends StatelessWidget {
       ),
       body: Column(
         children: [
-          ElevatedButton(
+          FilledButton(
               onPressed: () {
                 context.go("/books");
               },
-              child: const Text("book  list"))
+              child: const Text("book list")),
+          FilledButton(
+              onPressed: () {
+                context.go("/users");
+              },
+              child: const Text("users"))
         ],
       ),
     );
