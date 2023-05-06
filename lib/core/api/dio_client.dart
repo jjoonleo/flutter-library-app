@@ -10,17 +10,19 @@ class DioClient {
   String baseUrl = "http://192.168.0.26:8000";
   late Dio _dio;
 
-  DioClient() {
-    _dio = _createDio();
+  DioClient(String? auth) {
+    _dio = _createDio(auth);
   }
 
-  Dio _createDio() => Dio(
+  Dio _createDio(String? auth) => Dio(
         BaseOptions(
           baseUrl: baseUrl,
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            
+            if (auth != null) ...{
+                'Authorization': auth,
+              }
           },
           receiveTimeout: const Duration(seconds: 60),
           connectTimeout: const Duration(seconds: 60),

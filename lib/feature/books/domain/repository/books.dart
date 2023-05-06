@@ -1,17 +1,17 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_library_app/feature/books/books.dart';
-
-import '../model/books.dart';
+import 'package:flutter_library_app/core/core.dart';
 
 abstract class BooksRepository {
-  Future<Books> loadBooks();
+  Future<Either<Failure,Books>> loadBooks();
 
-  Future<void> saveBook(Book book);
+  Future<Either<Failure,void>> saveBook(Book book);
 
-  Future<void> deleteBook(Book book);
+  Future<Either<Failure,void>> deleteBook(Book book);
 
-  Future<Book?> getBookById(String id);
+  Future<Either<Failure,Book?>> getBookById(String id);
 
-  Future<void> deletAllBooks();
+  Future<Either<Failure,void>> deletAllBooks();
 
-  Future<void> borrowBook(Book book);
+  Future<Either<Failure,void>> borrowBook(Book book);
 }

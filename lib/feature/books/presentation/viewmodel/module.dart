@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_library_app/core/core.dart';
 import 'package:flutter_library_app/feature/books/books.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,7 +17,16 @@ class BooksStateNotifier extends StateNotifier<BooksState> {
     state = const BooksState.loading();
 
     final books = await getBooks.execute();
-    state = BooksState.data(books);
+    books.fold((l) {
+      if (l is ServerFailure) {
+        state = BooksState.error(message: l.message ?? "");
+      } else if (l is NoDataFailure) {
+        state = const BooksState.error(message: "unknown error");
+      }
+    }, (r) {
+      state = BooksState.data(r);
+      debugPrint("getUserInfo success");
+    });
   }
 
   Future<void> save(Book book) async {
