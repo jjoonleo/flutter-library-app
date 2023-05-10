@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_library_app/core/core.dart';
 import 'package:flutter_library_app/feature/books/books.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:http/http.dart';
 
 class BooksStateNotifier extends StateNotifier<BooksState> {
   BooksStateNotifier(this.ref) : super(const BooksState.loading()) {
@@ -12,6 +12,7 @@ class BooksStateNotifier extends StateNotifier<BooksState> {
   final Ref ref;
   late final getBooks = ref.read(getBooksProvider);
   late final saveBooks = ref.read(saveBookProvider);
+  late final borrowBook = ref.read(borrowBookProvider);
 
   Future<void> loadBooks() async {
     state = const BooksState.loading();
@@ -33,9 +34,14 @@ class BooksStateNotifier extends StateNotifier<BooksState> {
     await saveBooks.execute(book);
     await loadBooks();
   }
+
+  Future<void> borrow(Book book, String auth) async {
+    await borrowBook.execute(book, auth);
+  }
 }
 
-final booksListState = StateNotifierProvider<BooksStateNotifier, BooksState>((ref) {
+final booksListState =
+    StateNotifierProvider<BooksStateNotifier, BooksState>((ref) {
   return BooksStateNotifier(ref);
 });
 
