@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_library_app/core/core.dart';
 import 'package:flutter_library_app/feature/books/books.dart';
 
@@ -13,6 +14,7 @@ class BooksRemoteDatasourceImpl implements BooksRemoteDatasource {
       APIList.loadBooks,
       converter: (response) => Books.fromJson(response as Map<String, dynamic>),
     );
+    debugPrint(response.toString());
     return response;
   }
 
@@ -37,12 +39,12 @@ class BooksRemoteDatasourceImpl implements BooksRemoteDatasource {
 
     return response;
   }
-  
+
   @override
   Future<Either<Failure, void>> borrowBook(Book book) async {
     final response = await _client.getRequest(
       APIList.borrowBook,
-      queryParameters: {"id":book.id},
+      queryParameters: {"id": book.id},
       converter: (response) => Book.fromJson(response as Map<String, dynamic>),
     );
 
