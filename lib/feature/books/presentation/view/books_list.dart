@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_library_app/feature/books/books.dart';
 
-
 class BooksList extends ConsumerWidget {
   const BooksList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booksState = ref.watch(booksListState);
+    final booksModel = ref.read(booksListModel);
     final borrowBook = ref.read(borrowBookProvider);
 
     return Scaffold(
@@ -19,18 +19,27 @@ class BooksList extends ConsumerWidget {
       ),
       body: Column(children: [
         booksState.when(data: (books) {
-          return SizedBox(
-            height: 400,
-            child: ListView.builder(
-              itemCount: books.values.length,
-              itemBuilder: (context, index) {
-                final book = books.values[index];
-                return ListTile(
-                  title: Text(book.title),
-                  subtitle: Text(book.author),
-                );
-              },
-            ),
+          return Column(
+            children: [
+              Container(
+                height: 400,
+                child: ListView.builder(
+                  itemCount: books.values.length,
+                  itemBuilder: (context, index) {
+                    final book = books.values[index];
+                    return ListTile(
+                      title: Text(book.title),
+                      subtitle: Text(book.author),
+                    );
+                  },
+                ),
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    borrowBook.execute(books.values[0]);
+                  },
+                  child: Text("borrow")),
+            ],
           );
         }, error: (String? message) {
           return Text("error");
@@ -38,10 +47,10 @@ class BooksList extends ConsumerWidget {
           return CircularProgressIndicator();
         }),
         ElevatedButton(
-            onPressed: () {
-              //borrowBook.execute(books.values[0]);
+            onPressed: () async {
+              await booksModel.loadBooks();
             },
-            child: Text("borrow")),
+            child: Text("reload")),
       ]),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
