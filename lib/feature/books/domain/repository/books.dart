@@ -13,5 +13,5 @@ abstract class BooksRepository {
 
   Future<Either<Failure,void>> deletAllBooks();
 
-  Future<Either<Failure,void>> borrowBook(Book book);
+  Future<Either<Failure,void>> borrowBook(Book book, String auth);
 }

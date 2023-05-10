@@ -9,5 +9,5 @@ abstract class BooksRemoteDatasource {
 
   Future<Either<Failure, void>> save(Book book);
 
-  Future<Either<Failure, void>> borrowBook(Book book);
+  Future<Either<Failure, void>> borrowBook(Book book, String auth);
 }

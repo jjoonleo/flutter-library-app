@@ -5,7 +5,7 @@ class BorrowBookUseCaseImpl extends BorrowBookUseCase {
   final BooksRepository booksRepository;
 
   @override
-  Future<void> execute(Book book) async {
-    await booksRepository.borrowBook(book);
+  Future<void> execute(Book book, String auth) async {
+    await booksRepository.borrowBook(book, auth);
   }
 }
