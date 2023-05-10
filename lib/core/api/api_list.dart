@@ -7,9 +7,9 @@ class APIList {
 
   static const String getInfo = "/api/user/getInfo";
 
-  static const String loadBooks = "api/book/";
+  static const String loadBooks = "/api/book";
 
-  static const String saveBook = "api/save";
+  static const String saveBook = "/api/save";
 
-  static const String borrowBook = "api/borrow";
+  static const String borrowBook = "/api/borrow";
 }
