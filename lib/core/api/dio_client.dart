@@ -7,7 +7,7 @@ import '../core.dart';
 typedef ResponseConverter<T> = T Function(dynamic response);
 
 class DioClient {
-  String baseUrl = "http://192.168.0.26:8000";
+  String baseUrl = "http://ejun.kro.kr:8000";
   late Dio _dio;
 
   DioClient(String? auth) {
@@ -21,8 +21,8 @@ class DioClient {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             if (auth != null) ...{
-                'Authorization': auth,
-              }
+              'Authorization': auth,
+            }
           },
           receiveTimeout: const Duration(seconds: 60),
           connectTimeout: const Duration(seconds: 60),
@@ -59,6 +59,7 @@ class DioClient {
         response: response,
       );
     } on DioError catch (e) {
+      debugPrint(e.toString());
       return Left(
         ServerFailure(
           e.response?.data['description'] as String? ?? e.message,
