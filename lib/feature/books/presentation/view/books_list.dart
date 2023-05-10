@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_library_app/feature/user/presentation/viewmodel/module.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_library_app/feature/books/books.dart';
@@ -11,6 +12,7 @@ class BooksList extends ConsumerWidget {
     final booksState = ref.watch(booksListState);
     final booksModel = ref.read(booksListModel);
     final borrowBook = ref.read(borrowBookProvider);
+    final user = ref.watch(userState);
 
     return Scaffold(
       appBar: AppBar(
@@ -36,7 +38,12 @@ class BooksList extends ConsumerWidget {
               ),
               ElevatedButton(
                   onPressed: () {
-                    borrowBook.execute(books.values[0]);
+                    user.when(
+                        notLoggedIn: () {},
+                        loggedIn: (data) async {
+                          await booksModel.borrow(books.values[0], data.token);
+                        },
+                        error: (msg) {});
                   },
                   child: Text("borrow")),
             ],
