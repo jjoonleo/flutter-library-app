@@ -7,7 +7,7 @@ import '../core.dart';
 typedef ResponseConverter<T> = T Function(dynamic response);
 
 class DioClient {
-  String baseUrl = "http://ejun.kro.kr:8000";
+  String baseUrl = "http://192.168.55.14:8000";
   late Dio _dio;
 
   DioClient(String? auth) {
@@ -62,7 +62,7 @@ class DioClient {
       debugPrint(e.toString());
       return Left(
         ServerFailure(
-          e.response?.data['description'] as String? ?? e.message,
+          e.response?.data?['msg'] as String? ?? e.message,
         ),
       );
     }
@@ -96,7 +96,7 @@ class DioClient {
     } on DioError catch (e) {
       return Left(
         ServerFailure(
-          e.response?.data['msg'] as String? ?? e.message,
+          e.response?.data?['msg'] as String? ?? e.message,
         ),
       );
     }
