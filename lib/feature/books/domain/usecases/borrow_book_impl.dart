@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:flutter_library_app/core/core.dart';
 import 'package:flutter_library_app/feature/books/books.dart';
 
 class BorrowBookUseCaseImpl extends BorrowBookUseCase {
@@ -5,7 +7,7 @@ class BorrowBookUseCaseImpl extends BorrowBookUseCase {
   final BooksRepository booksRepository;
 
   @override
-  Future<void> execute(Book book, String auth) async {
-    await booksRepository.borrowBook(book, auth);
+  Future<Either<Failure,Book>> execute(Book book, String auth) async {
+    return booksRepository.borrowBook(book, auth);
   }
 }

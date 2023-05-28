@@ -54,7 +54,7 @@ class BookRepositoryImpl extends BooksRepository {
   }
 
   @override
-  Future<Either<Failure, void>> borrowBook(Book book, String auth) {
+  Future<Either<Failure, Book>> borrowBook(Book book, String auth) {
     return booksRemoteDatasource.borrowBook(book, auth);
   }
 }

@@ -41,7 +41,8 @@ class BooksList extends ConsumerWidget {
                     user.when(
                         notLoggedIn: () {},
                         loggedIn: (data) async {
-                          await booksModel.borrow(books.values[0], data.token);
+                          var result = await booksModel.borrow(books.values[0]);
+                          result.fold((l) => debugPrint(l), (r) => debugPrint(r.toString()));
                         },
                         error: (msg) {});
                   },

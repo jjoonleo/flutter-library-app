@@ -41,7 +41,7 @@ class BooksRemoteDatasourceImpl implements BooksRemoteDatasource {
   }
 
   @override
-  Future<Either<Failure, void>> borrowBook(Book book, String auth) async {
+  Future<Either<Failure, Book>> borrowBook(Book book, String auth) async {
     final response = await _client.getRequest(
       APIList.borrowBook,
       queryParameters: {"id": book.id},
