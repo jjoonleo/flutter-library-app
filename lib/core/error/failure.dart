@@ -24,6 +24,14 @@ class NoDataFailure extends Failure {
   int get hashCode => 0;
 }
 
+class UnauthorizedFailure extends Failure{
+  @override
+  bool operator ==(Object other) => other is UnauthorizedFailure;
+
+  @override
+  int get hashCode => 0;
+}
+
 class CacheFailure extends Failure {
   @override
   bool operator ==(Object other) => other is CacheFailure;
