@@ -5,5 +5,5 @@ abstract class SecureStorage {
 
   Future<String?> getToken();
 
-  Future<void> deleteToken();
+  void deleteToken();
 }

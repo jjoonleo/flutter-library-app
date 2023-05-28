@@ -17,7 +17,7 @@ class SecureStorageImpl implements SecureStorage {
   }
 
   @override
-  Future<void> deleteToken() async {
-    await storage.delete(key: "token");
+  void deleteToken()  {
+    storage.delete(key: "token");
   }
 }
