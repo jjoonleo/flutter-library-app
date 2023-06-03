@@ -7,7 +7,6 @@ import '../core.dart';
 typedef ResponseConverter<T> = T Function(dynamic response);
 
 class DioClient {
-  String baseUrl = "http://192.168.55.14:8000";
   late Dio _dio;
 
   DioClient(String? auth) {
@@ -16,7 +15,7 @@ class DioClient {
 
   Dio _createDio(String? auth) => Dio(
         BaseOptions(
-          baseUrl: baseUrl,
+          baseUrl: APIList.baseUrl,
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',

@@ -1,15 +1,17 @@
 class APIList {
   APIList._();
 
-  static const String signup = "/api/user/signup";
+  static const String baseUrl = "http://192.168.55.14:8000/api/";
 
-  static const String login = "/api/user/login";
+  static const String signup = "user/signup";
 
-  static const String getInfo = "/api/user/getInfo";
+  static const String login = "user/login";
 
-  static const String loadBooks = "/api/book";
+  static const String getInfo = "user/getInfo";
 
-  static const String saveBook = "/api/book/save";
+  static const String loadBooks = "book";
 
-  static const String borrowBook = "/api/book/borrow";
+  static const String saveBook = "book/save";
+
+  static const String borrowBook = "book/borrow";
 }
