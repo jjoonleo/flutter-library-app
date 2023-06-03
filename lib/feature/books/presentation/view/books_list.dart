@@ -26,12 +26,19 @@ class BooksList extends ConsumerWidget {
                 height: 400,
                 child: ListView.builder(
                   itemCount: books.values.length,
-                  itemBuilder: (context, index) {
+                  itemBuilder: (itemcontext, index) {
                     final book = books.values[index];
-                    return ListTile(
-                      title: Text(book.title),
-                      subtitle: Text(book.author),
-                      tileColor: book.available!=null ? Colors.red[100]:Colors.white,
+                    return TextButton(
+                      child: ListTile(
+                        title: Text(book.title),
+                        subtitle: Text(book.author),
+                        tileColor: book.available != null
+                            ? Colors.red[100]
+                            : Colors.white,
+                      ),
+                      onPressed: () {
+                        context.pushNamed("detail", extra: book);
+                      },
                     );
                   },
                 ),
@@ -42,7 +49,8 @@ class BooksList extends ConsumerWidget {
                         notLoggedIn: () {},
                         loggedIn: (data) async {
                           var result = await booksModel.borrow(books.values[0]);
-                          result.fold((l) => debugPrint(l), (r) => debugPrint(r.toString()));
+                          result.fold((l) => debugPrint(l),
+                              (r) => debugPrint(r.toString()));
                         },
                         error: (msg) {});
                   },

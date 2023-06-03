@@ -54,7 +54,7 @@ class _BooksAddState extends ConsumerState<BooksAdd> {
                         ),
                         validator: FormBuilderValidators.compose([
                           FormBuilderValidators.required(
-                              errorText: "Pleas enter author"),
+                              errorText: "Please enter author"),
                         ]),
                       ),
                       CheckboxListTile(
