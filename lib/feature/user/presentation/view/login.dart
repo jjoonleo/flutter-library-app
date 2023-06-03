@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_library_app/feature/user/user.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -20,7 +19,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final FocusNode _passwordFocusNode = FocusNode();
   late final usermodel = ref.read(userModel);
   late final user = ref.watch(userState);
-  static final storage = FlutterSecureStorage();
   final url = Uri.http('192.168.0.26:8000', 'api/user/login');
 
   @override

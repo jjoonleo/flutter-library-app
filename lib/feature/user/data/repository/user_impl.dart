@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_library_app/core/core.dart';
 import 'package:flutter_library_app/feature/user/user.dart';
 import 'package:dartz/dartz.dart';
@@ -34,6 +33,6 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<void> logout() async {
-    await secureStorage.deleteToken();
+    secureStorage.deleteToken();
   }
 }

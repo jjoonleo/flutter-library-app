@@ -11,7 +11,6 @@ class BooksList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booksState = ref.watch(booksListState);
     final booksModel = ref.read(booksListModel);
-    final borrowBook = ref.read(borrowBookProvider);
     final user = ref.watch(userState);
 
     return Scaffold(
@@ -23,7 +22,7 @@ class BooksList extends ConsumerWidget {
         booksState.when(data: (books) {
           return Column(
             children: [
-              Container(
+              SizedBox(
                 height: 400,
                 child: ListView.builder(
                   itemCount: books.values.length,
@@ -32,6 +31,7 @@ class BooksList extends ConsumerWidget {
                     return ListTile(
                       title: Text(book.title),
                       subtitle: Text(book.author),
+                      tileColor: book.available!=null ? Colors.red[100]:Colors.white,
                     );
                   },
                 ),
@@ -46,19 +46,19 @@ class BooksList extends ConsumerWidget {
                         },
                         error: (msg) {});
                   },
-                  child: Text("borrow")),
+                  child: const Text("borrow")),
             ],
           );
         }, error: (String? message) {
-          return Text("error");
+          return const Text("error");
         }, loading: () {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }),
         ElevatedButton(
             onPressed: () async {
               await booksModel.loadBooks();
             },
-            child: Text("reload")),
+            child: const Text("reload")),
       ]),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {

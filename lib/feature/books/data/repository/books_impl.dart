@@ -1,11 +1,8 @@
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_library_app/core/core.dart';
 import 'package:flutter_library_app/feature/books/books.dart';
-import 'package:http/http.dart' as http;
 
 class BookRepositoryImpl extends BooksRepository {
   BookRepositoryImpl(this.files, this.booksRemoteDatasource);

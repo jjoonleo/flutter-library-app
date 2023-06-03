@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -22,7 +21,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   late final usermodel = ref.read(userModel);
   late final user = ref.watch(userState);
 
-  var snackBar = SnackBar(
+  var snackBar = const SnackBar(
     content: Center(child: Text('학번을 입력하세요.')),
   );
 
@@ -78,35 +77,35 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                               mainAxisSize: MainAxisSize.max,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text("학번:"),
-                                SizedBox(
+                                const Text("학번:"),
+                                const SizedBox(
                                   width: 20,
                                 ),
                                 Dropdown(
                                     name: "grade",
                                     options: gradeOptions,
                                     width: 50),
-                                Text("학년"),
-                                SizedBox(
+                                const Text("학년"),
+                                const SizedBox(
                                   width: 15,
                                 ),
                                 Dropdown(
                                     name: "classroom",
                                     options: classroomOptions,
                                     width: 50),
-                                Text("반"),
-                                SizedBox(
+                                const Text("반"),
+                                const SizedBox(
                                   width: 15,
                                 ),
                                 Dropdown(
                                     name: "number",
                                     options: numberOptions,
                                     width: 50),
-                                Text("번"),
+                                const Text("번"),
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                             width: double.infinity,
                           ),
@@ -117,7 +116,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                 FormBuilderValidators.required(),
                               ]),
                               false),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                             width: double.infinity,
                           ),
@@ -129,7 +128,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                 FormBuilderValidators.email()
                               ]),
                               false),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                             width: double.infinity,
                           ),
@@ -140,7 +139,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                 FormBuilderValidators.required(),
                               ]),
                               true),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                             width: double.infinity,
                           ),
@@ -160,11 +159,11 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                 }
                               ]),
                               true),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                             width: double.infinity,
                           ),
-                          FilledButton(onPressed: _submit, child: Text("test")),
+                          FilledButton(onPressed: _submit, child: const Text("test")),
                         ],
                       ))));
         }),
@@ -179,7 +178,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
       onChanged: (val) {
         debugPrint(val); // Print the text value write into TextField
       },
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 20,
       ),
       decoration: InputDecoration(
