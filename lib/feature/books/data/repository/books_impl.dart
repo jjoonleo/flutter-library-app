@@ -9,6 +9,7 @@ class BookRepositoryImpl extends BooksRepository {
 
   final Files files;
   final BooksRemoteDatasourceImpl booksRemoteDatasource;
+  Books? books;
 
   late final String path = 'books.json';
 
@@ -36,12 +37,17 @@ class BookRepositoryImpl extends BooksRepository {
   @override
   Future<Either<Failure, Books>> loadBooks() async {
     // Load the books from path
-    return booksRemoteDatasource.load();
+    Either<Failure, Books> result = await booksRemoteDatasource.load();
+    books = result.fold((l) => null, (r) => r);
+    return result;
   }
 
   @override
   Future<Either<Failure, Book?>> getBookById(String id) async {
     // Get a book by id
+    if (books != null) {
+      return Right(books!.values.firstWhere((element) => element.id == id));
+    }
     return booksRemoteDatasource.getById(id);
   }
 
