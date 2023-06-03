@@ -17,6 +17,7 @@ class Book with _$Book {
     required String publisher,
     @Default(null) String? description,
     @Default(null) String? available,
+    @Default("noimg.jpeg") String img,
   }) = _Book;
 
   factory Book.fromJson(Map<String, Object?> json)

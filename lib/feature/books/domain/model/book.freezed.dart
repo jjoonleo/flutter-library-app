@@ -27,6 +27,7 @@ mixin _$Book {
   String get publisher => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   String? get available => throw _privateConstructorUsedError;
+  String get img => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -45,7 +46,8 @@ abstract class $BookCopyWith<$Res> {
       String isbn,
       String publisher,
       String? description,
-      String? available});
+      String? available,
+      String img});
 }
 
 /// @nodoc
@@ -68,6 +70,7 @@ class _$BookCopyWithImpl<$Res, $Val extends Book>
     Object? publisher = null,
     Object? description = freezed,
     Object? available = freezed,
+    Object? img = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -98,6 +101,10 @@ class _$BookCopyWithImpl<$Res, $Val extends Book>
           ? _value.available
           : available // ignore: cast_nullable_to_non_nullable
               as String?,
+      img: null == img
+          ? _value.img
+          : img // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -115,7 +122,8 @@ abstract class _$$_BookCopyWith<$Res> implements $BookCopyWith<$Res> {
       String isbn,
       String publisher,
       String? description,
-      String? available});
+      String? available,
+      String img});
 }
 
 /// @nodoc
@@ -134,6 +142,7 @@ class __$$_BookCopyWithImpl<$Res> extends _$BookCopyWithImpl<$Res, _$_Book>
     Object? publisher = null,
     Object? description = freezed,
     Object? available = freezed,
+    Object? img = null,
   }) {
     return _then(_$_Book(
       id: null == id
@@ -164,6 +173,10 @@ class __$$_BookCopyWithImpl<$Res> extends _$BookCopyWithImpl<$Res, _$_Book>
           ? _value.available
           : available // ignore: cast_nullable_to_non_nullable
               as String?,
+      img: null == img
+          ? _value.img
+          : img // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -178,7 +191,8 @@ class _$_Book implements _Book {
       required this.isbn,
       required this.publisher,
       this.description = null,
-      this.available = null});
+      this.available = null,
+      this.img = "noimg.jpeg"});
 
   factory _$_Book.fromJson(Map<String, dynamic> json) => _$$_BookFromJson(json);
 
@@ -198,10 +212,13 @@ class _$_Book implements _Book {
   @override
   @JsonKey()
   final String? available;
+  @override
+  @JsonKey()
+  final String img;
 
   @override
   String toString() {
-    return 'Book(id: $id, title: $title, author: $author, isbn: $isbn, publisher: $publisher, description: $description, available: $available)';
+    return 'Book(id: $id, title: $title, author: $author, isbn: $isbn, publisher: $publisher, description: $description, available: $available, img: $img)';
   }
 
   @override
@@ -218,13 +235,14 @@ class _$_Book implements _Book {
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.available, available) ||
-                other.available == available));
+                other.available == available) &&
+            (identical(other.img, img) || other.img == img));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, title, author, isbn, publisher, description, available);
+  int get hashCode => Object.hash(runtimeType, id, title, author, isbn,
+      publisher, description, available, img);
 
   @JsonKey(ignore: true)
   @override
@@ -248,7 +266,8 @@ abstract class _Book implements Book {
       required final String isbn,
       required final String publisher,
       final String? description,
-      final String? available}) = _$_Book;
+      final String? available,
+      final String img}) = _$_Book;
 
   factory _Book.fromJson(Map<String, dynamic> json) = _$_Book.fromJson;
 
@@ -266,6 +285,8 @@ abstract class _Book implements Book {
   String? get description;
   @override
   String? get available;
+  @override
+  String get img;
   @override
   @JsonKey(ignore: true)
   _$$_BookCopyWith<_$_Book> get copyWith => throw _privateConstructorUsedError;
