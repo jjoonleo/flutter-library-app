@@ -15,6 +15,7 @@ class BooksStateNotifier extends StateNotifier<BooksState> {
   late final getBooks = ref.read(getBooksProvider);
   late final saveBooks = ref.read(saveBookProvider);
   late final borrowBook = ref.read(borrowBookProvider);
+  late final getBookById = ref.read(getBookProvider);
 
   Future<void> loadBooks() async {
     state = const BooksState.loading();
@@ -30,6 +31,11 @@ class BooksStateNotifier extends StateNotifier<BooksState> {
       state = BooksState.data(r);
       debugPrint("getUserInfo success");
     });
+  }
+
+  Future<Book?> getBook(String id) async {
+    final book = await getBookById.execute(id);
+    return book.fold((l) => null, (r) => r);
   }
 
   Future<void> save(Book book) async {
