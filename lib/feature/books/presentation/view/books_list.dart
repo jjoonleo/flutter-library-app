@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_library_app/feature/books/presentation/widgets/book_tile.dart';
 import 'package:flutter_library_app/feature/user/presentation/viewmodel/module.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_library_app/feature/books/books.dart';
 
-class BooksList extends ConsumerWidget {
+class BooksList extends ConsumerStatefulWidget {
   const BooksList({super.key});
+  
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final booksState = ref.watch(booksListState);
-    final booksModel = ref.read(booksListModel);
-    final user = ref.watch(userState);
+  ConsumerState<BooksList> createState() => _BooksListState();
+}
 
+class _BooksListState extends ConsumerState<BooksList> {
+  late final booksModel = ref.read(booksListModel);
+  late final user = ref.watch(userState);
+
+  Future<void> _reloadBooks() async {
+    await booksModel.loadBooks();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    final booksState = ref.watch(booksListState);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -23,24 +35,16 @@ class BooksList extends ConsumerWidget {
           return Column(
             children: [
               SizedBox(
-                height: 400,
-                child: ListView.builder(
-                  itemCount: books.values.length,
-                  itemBuilder: (itemcontext, index) {
-                    final book = books.values[index];
-                    return TextButton(
-                      child: ListTile(
-                        title: Text(book.title),
-                        subtitle: Text(book.author),
-                        tileColor: book.available != null
-                            ? Colors.red[100]
-                            : Colors.white,
-                      ),
-                      onPressed: () {
-                        context.pushNamed("detail", extra: book);
-                      },
-                    );
-                  },
+                height: MediaQuery.of(context).size.height - 300,
+                child: RefreshIndicator(
+                  onRefresh: _reloadBooks,
+                  child: ListView.builder(
+                    itemCount: books.values.length,
+                    itemBuilder: (itemcontext, index) {
+                      final book = books.values[index];
+                      return BookTile(book: book);
+                    },
+                  ),
                 ),
               ),
               ElevatedButton(
