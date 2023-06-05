@@ -14,4 +14,8 @@ class APIList {
   static const String saveBook = "book/save";
 
   static const String borrowBook = "book/borrow";
+
+  static const String loadCheckouts = "book/checkouts";
+
+  static const String getCheckoutByBookId = "book/checkoutByBookId";
 }
