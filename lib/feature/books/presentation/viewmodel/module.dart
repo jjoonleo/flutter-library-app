@@ -75,3 +75,54 @@ final booksListState =
 final booksListModel = Provider<BooksStateNotifier>((ref) {
   return ref.watch(booksListState.notifier);
 });
+
+class CheckoutsStateNotifier extends StateNotifier<CheckoutsState> {
+  CheckoutsStateNotifier(this.ref) : super(const CheckoutsState.loading());
+
+  final Ref ref;
+
+  late final getCheckouts = ref.read(getCheckoutsProvider);
+  late final getCheckout = ref.read(getCheckoutProvider);
+
+  Future<void> loadCheckouts(UserState user) async {
+    state = const CheckoutsState.loading();
+    user.when(notLoggedIn: () {
+      //Modal.buildWithRedirect("로그인 되어 있지 않음", "책을 대출하시려먼 먼저 로그인을 해 주세요","/users/login", "로그인하러 가기", context);
+      state = CheckoutsState.error(message: "not logged in");
+    }, loggedIn: (data) async {
+      final books = await getCheckouts.execute(data.token);
+      books.fold((l) {
+        if (l is ServerFailure) {
+          state = CheckoutsState.error(message: l.message ?? "");
+        } else if (l is NoDataFailure) {
+          state = const CheckoutsState.error(message: "unknown error");
+        }
+      }, (r) {
+        state = CheckoutsState.data(r);
+        debugPrint("getCheckoutsInfo success");
+      });
+    }, error: (msg) {
+      //Modal.build("error", "something went wrong please login agian", context);
+      state = CheckoutsState.error(message: "not logged in");
+    });
+  }
+
+  Future<Checkout?> getCheckoutByBookId(
+      String id, UserState user, BuildContext context) async {
+    return user.when(notLoggedIn: () {
+      return null;
+    }, loggedIn: (data) async {
+      final result = await getCheckout.execute(id, data.token);
+      return result.fold((l)=>null, (r) =>r);
+    }, error: (msg) => null);
+  }
+}
+
+final checkoutsListState =
+    StateNotifierProvider<CheckoutsStateNotifier, CheckoutsState>((ref) {
+  return CheckoutsStateNotifier(ref);
+});
+
+final chekcoutsListModel = Provider<CheckoutsStateNotifier>((ref) {
+  return ref.watch(checkoutsListState.notifier);
+});

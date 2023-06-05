@@ -4,3 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final booksProvider = Provider<BooksRepository>((ref) {
   return BookRepositoryImpl(ref.read(filesProvider), ref.read(booksRemoteDatasourceProvider));
 });
+
+final checkoutsProvider = Provider<CheckoutsRepository>((ref) {
+  return CheckoutsRepositoryImpl(ref.read(checkoutsDatasourceProvider));
+});

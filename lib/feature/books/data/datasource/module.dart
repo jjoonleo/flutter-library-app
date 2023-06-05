@@ -9,3 +9,7 @@ final filesProvider = Provider<Files>((ref) {
 final booksRemoteDatasourceProvider = Provider<BooksRemoteDatasourceImpl>((ref){
   return BooksRemoteDatasourceImpl(DioClient(null));
 });
+
+final checkoutsDatasourceProvider = Provider<CheckoutsRemoteDatasourceImpl>((ref){
+  return CheckoutsRemoteDatasourceImpl(DioClient(null));
+});

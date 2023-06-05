@@ -21,3 +21,11 @@ final deleteBookProvider = Provider<DeleteBookUseCase>((ref) {
 final borrowBookProvider = Provider<BorrowBookUseCase>((ref) {
   return BorrowBookUseCaseImpl(ref.read(booksProvider));
 });
+
+final getCheckoutsProvider = Provider<GetCheckoutsUseCase>((ref) {
+  return GetCheckoutsUseCaseImpl(ref.read(checkoutsProvider));
+});
+
+final getCheckoutProvider = Provider<GetCheckoutUseCase>((ref) {
+  return GetCheckoutUseCaseImpl(ref.read(checkoutsProvider));
+});
