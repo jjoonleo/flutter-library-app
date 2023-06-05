@@ -23,7 +23,12 @@ class BooksRemoteDatasourceImpl implements BooksRemoteDatasource {
     final response = await _client.getRequest(
       APIList.loadBooks,
       queryParameters: {"id": id},
-      converter: (response) => Book.fromJson(response as Map<String, dynamic>),
+      converter: (response) {
+        debugPrint(response.toString());
+        if (response == null) return null;
+        
+        return Book.fromJson(response["values"][0] as Map<String, dynamic>);
+      },
     );
 
     return response;
