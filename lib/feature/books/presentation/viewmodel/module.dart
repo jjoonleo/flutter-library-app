@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_library_app/core/core.dart';
 import 'package:flutter_library_app/feature/books/books.dart';
-import 'package:flutter_library_app/feature/user/presentation/viewmodel/module.dart';
+import 'package:flutter_library_app/feature/user/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BooksStateNotifier extends StateNotifier<BooksState> {
@@ -11,7 +11,7 @@ class BooksStateNotifier extends StateNotifier<BooksState> {
   }
 
   final Ref ref;
-  late var user = ref.watch(userState);
+  //late var user = ref.watch(userState);
   late final getBooks = ref.read(getBooksProvider);
   late final saveBooks = ref.read(saveBookProvider);
   late final borrowBook = ref.read(borrowBookProvider);
@@ -34,6 +34,7 @@ class BooksStateNotifier extends StateNotifier<BooksState> {
   }
 
   Future<Book?> getBook(String id) async {
+    debugPrint("getBook");
     final book = await getBookById.execute(id);
     return book.fold((l) => null, (r) => r);
   }
@@ -43,25 +44,35 @@ class BooksStateNotifier extends StateNotifier<BooksState> {
     await loadBooks();
   }
 
-  Future<Either<String, Book>> borrow(Book book) async {
+  Future<Either<String, Book>> borrow(
+      Book book, BuildContext context, UserState user) async {
     return user.when(notLoggedIn: () {
+      Modal.buildWithRedirect("로그인 되어 있지 않음", "책을 대출하시려먼 먼저 로그인을 해 주세요",
+          "/users/login", "로그인하러 가기", context);
       return left("please login");
     }, loggedIn: (data) async {
       final result = await borrowBook.execute(book, data.token);
       return result.fold((l) {
         if (l is ServerFailure) {
+          Modal.build("error",
+              l.message ?? "server error please try again later", context);
           return left(l.message ?? "server error please try again later");
         } else if (l is NoDataFailure) {
+          Modal.build("error", "no such book found", context);
           return left("no such book found");
         } else if (l is UnauthorizedFailure) {
-          return left("not logged in please login first");
+          Modal.build("not logged in", "please login first", context);
+          return left("please login");
         }
+        Modal.build(
+            "error", "something went wrong please login agian", context);
         return left("unknown error");
       }, (r) {
         debugPrint("getUserInfo success");
         return right(r);
       });
     }, error: (msg) {
+      Modal.build("error", "something went wrong please login agian", context);
       return left("something went wrong please login agian");
     });
   }
