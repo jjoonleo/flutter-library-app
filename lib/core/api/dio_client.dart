@@ -58,10 +58,12 @@ class DioClient {
         response: response,
       );
     } on DioError catch (e) {
-      debugPrint(e.toString());
+      if (e.response?.statusCode == 502) {
+        return Left(ServerFailure("502 Bad Gateway"));
+      }
       return Left(
         ServerFailure(
-          e.response?.data?['msg'] as String? ?? e.message,
+          e.response?.data?['msg'] as String? ?? "could not connect to server",
         ),
       );
     }
@@ -93,9 +95,12 @@ class DioClient {
         response: response,
       );
     } on DioError catch (e) {
+      if (e.response?.statusCode == 502) {
+        return Left(ServerFailure("502 Bad Gateway"));
+      }
       return Left(
         ServerFailure(
-          e.response?.data?['msg'] as String? ?? e.message,
+          e.response?.data?['msg'] as String? ?? "could not connect to server",
         ),
       );
     }
