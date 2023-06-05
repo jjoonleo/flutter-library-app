@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_library_app/core/core.dart';
 import 'package:flutter_library_app/feature/books/books.dart';
+import 'package:flutter_library_app/feature/user/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BookDetail extends ConsumerStatefulWidget {
@@ -13,7 +14,9 @@ class BookDetail extends ConsumerStatefulWidget {
 }
 
 class _BookDetailState extends ConsumerState<BookDetail> {
-  late final booksList = ref.read(booksListModel);
+  late final booksModel = ref.read(booksListModel);
+  late final checkoutsModel = ref.read(chekcoutsListModel);
+  late final user = ref.watch(userState);
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -22,6 +25,7 @@ class _BookDetailState extends ConsumerState<BookDetail> {
     final appBarHeight =
         appBar.preferredSize.height + MediaQuery.of(context).padding.top;
     final scaffoldBodyHeight = fullHeight - appBarHeight;
+    final user = ref.watch(userState);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.book.title),
@@ -52,30 +56,50 @@ class _BookDetailState extends ConsumerState<BookDetail> {
                   ]),
                 ),
               ),
-              FilledButton(
-                  onPressed: widget.book.available != null
-                      ? null
-                      : () async {
-                          Either<String, Book> book =
-                              await booksList.borrow(widget.book);
-                          book.fold((l) => debugPrint(l),
-                              (r) => debugPrint(r.toString()));
-                        },
-                  style: ButtonStyle(
-                    backgroundColor: widget.book.available != null
-                        ? MaterialStateProperty.all<Color>(
-                            theme.colorScheme.primaryContainer)
-                        : MaterialStateProperty.all<Color>(
-                            theme.colorScheme.primary),
-                  ),
-                  child: SizedBox(
-                      width: double.maxFinite,
-                      height: 60,
-                      child: Center(
-                          child: Text(
-                        "책 빌리기",
-                        style: TextStyle(fontSize: 20),
-                      )))),
+              FutureBuilder(
+                  future: checkoutsModel.getCheckoutByBookId(
+                      widget.book.id, user, context),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    bool flag = false;
+                    String buttonText = "책 빌리기";
+                    callback() async {
+                      if (snapshot.data != null) {
+                        debugPrint("return");
+                      } else {
+                        Either<String, Book> book =
+                            await booksModel.borrow(widget.book, context, user);
+                        book.fold((l) => debugPrint(l),
+                            (r) => debugPrint(r.toString()));
+                      }
+                    }
+
+              
+                    if (widget.book.available != null) {
+                      flag = true;
+                    }
+                    if (snapshot.data != null) {
+                      flag = false;
+                      buttonText = "책 반납하기";
+                    }
+                    return FilledButton(
+                        onPressed: flag ? null : callback,
+                        style: ButtonStyle(
+                          backgroundColor: flag
+                              ? MaterialStateProperty.all<Color>(
+                                  theme.colorScheme.primaryContainer)
+                              : MaterialStateProperty.all<Color>(
+                                  theme.colorScheme.primary),
+                        ),
+                        child: SizedBox(
+                            width: double.maxFinite,
+                            height: 60,
+                            child: Center(
+                                child: Text(
+                              buttonText,
+                              style: TextStyle(fontSize: 20),
+                            ))));
+                  }),
             ],
           ),
         ),
