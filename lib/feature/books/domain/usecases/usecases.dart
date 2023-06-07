@@ -10,6 +10,8 @@ export './get_checkouts.dart';
 export './get_checkouts_impl.dart';
 export './get_checkout.dart';
 export './get_checkout_impl.dart';
+export './return_book.dart';
+export './return_book_impl.dart';
 export 'save_book.dart';
 export 'save_book_impl.dart';
 export 'module.dart';

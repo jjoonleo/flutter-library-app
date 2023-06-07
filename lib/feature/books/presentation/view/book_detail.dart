@@ -15,7 +15,7 @@ class BookDetail extends ConsumerStatefulWidget {
 
 class _BookDetailState extends ConsumerState<BookDetail> {
   late final booksModel = ref.read(booksListModel);
-  late final checkoutsModel = ref.read(chekcoutsListModel);
+  late final checkoutsModel = ref.read(checkcoutsListModel);
   late final user = ref.watch(userState);
   @override
   Widget build(BuildContext context) {
@@ -65,16 +65,36 @@ class _BookDetailState extends ConsumerState<BookDetail> {
                     String buttonText = "책 빌리기";
                     callback() async {
                       if (snapshot.data != null) {
-                        debugPrint("return");
+                        Either<String, void> result =
+                            await checkoutsModel.returnBook(widget.book, context);
+                        result.fold((l) {
+                          Modal.build("에러", l, context);
+                        }, (r) {
+                          Navigator.pop(context);
+                          Modal.build(
+                              "반납 완료",
+                              "반납이 완료되었습니다.",
+                              context);
+                          
+                        });
                       } else {
-                        Either<String, Book> book =
-                            await booksModel.borrow(widget.book, context, user);
-                        book.fold((l) => debugPrint(l),
-                            (r) => debugPrint(r.toString()));
+                        Either<String, void> result =
+                            await checkoutsModel.borrow(widget.book, context, user);
+                        result.fold((l) {
+                          Modal.build("에러", l, context);
+                        }, (r) {
+                          Navigator.pop(context);
+                          Modal.buildWithRedirect(
+                              "대출 완료",
+                              "대출이 완료되었습니다.\n대출하신 책은 내 정보에서 확인 하실 수 있습니다.",
+                              "/users",
+                              "내 정보로 가기",
+                              context);
+                          
+                        });
                       }
                     }
 
-              
                     if (widget.book.available != null) {
                       flag = true;
                     }

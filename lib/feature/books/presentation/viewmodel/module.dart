@@ -14,12 +14,9 @@ class BooksStateNotifier extends StateNotifier<BooksState> {
   //late var user = ref.watch(userState);
   late final getBooks = ref.read(getBooksProvider);
   late final saveBooks = ref.read(saveBookProvider);
-  late final borrowBook = ref.read(borrowBookProvider);
   late final getBookById = ref.read(getBookProvider);
 
   Future<void> loadBooks() async {
-    state = const BooksState.loading();
-
     final books = await getBooks.execute();
     books.fold((l) {
       if (l is ServerFailure) {
@@ -34,46 +31,15 @@ class BooksStateNotifier extends StateNotifier<BooksState> {
   }
 
   Future<Book?> getBook(String id) async {
-    debugPrint("getBook");
+    //debugPrint("getBook is called");
     final book = await getBookById.execute(id);
     return book.fold((l) => null, (r) => r);
   }
 
   Future<void> save(Book book) async {
-    await saveBooks.execute(book);
-    await loadBooks();
-  }
-
-  Future<Either<String, Book>> borrow(
-      Book book, BuildContext context, UserState user) async {
-    return user.when(notLoggedIn: () {
-      Modal.buildWithRedirect("로그인 되어 있지 않음", "책을 대출하시려먼 먼저 로그인을 해 주세요",
-          "/users/login", "로그인하러 가기", context);
-      return left("please login");
-    }, loggedIn: (data) async {
-      final result = await borrowBook.execute(book, data.token);
-      return result.fold((l) {
-        if (l is ServerFailure) {
-          Modal.build("error",
-              l.message ?? "server error please try again later", context);
-          return left(l.message ?? "server error please try again later");
-        } else if (l is NoDataFailure) {
-          Modal.build("error", "no such book found", context);
-          return left("no such book found");
-        } else if (l is UnauthorizedFailure) {
-          Modal.build("not logged in", "please login first", context);
-          return left("please login");
-        }
-        Modal.build(
-            "error", "something went wrong please login agian", context);
-        return left("unknown error");
-      }, (r) {
-        debugPrint("getUserInfo success");
-        return right(r);
-      });
-    }, error: (msg) {
-      Modal.build("error", "something went wrong please login agian", context);
-      return left("something went wrong please login agian");
+    final result = await saveBooks.execute(book);
+    result.fold((l) => null, (books) {
+      state = BooksState.data(books);
     });
   }
 }
@@ -88,44 +54,97 @@ final booksListModel = Provider<BooksStateNotifier>((ref) {
 });
 
 class CheckoutsStateNotifier extends StateNotifier<CheckoutsState> {
-  CheckoutsStateNotifier(this.ref) : super(const CheckoutsState.loading());
+  CheckoutsStateNotifier(this.ref) : super(const CheckoutsState.loading()) {
+    loadCheckouts();
+  }
 
   final Ref ref;
 
-  late final getCheckouts = ref.read(getCheckoutsProvider);
-  late final getCheckout = ref.read(getCheckoutProvider);
+  late final _getCheckouts = ref.read(getCheckoutsProvider);
+  late final _getCheckout = ref.read(getCheckoutProvider);
+  late final _borrowBook = ref.read(borrowBookProvider);
+  late final _returnBook = ref.read(returnBookProvider);
 
-  Future<void> loadCheckouts(UserState user) async {
-    state = const CheckoutsState.loading();
-    user.when(notLoggedIn: () {
-      //Modal.buildWithRedirect("로그인 되어 있지 않음", "책을 대출하시려먼 먼저 로그인을 해 주세요","/users/login", "로그인하러 가기", context);
-      state = CheckoutsState.error(message: "not logged in");
-    }, loggedIn: (data) async {
-      final books = await getCheckouts.execute(data.token);
-      books.fold((l) {
-        if (l is ServerFailure) {
-          state = CheckoutsState.error(message: l.message ?? "");
-        } else if (l is NoDataFailure) {
-          state = const CheckoutsState.error(message: "unknown error");
-        }
-      }, (r) {
-        state = CheckoutsState.data(r);
-        debugPrint("getCheckoutsInfo success");
-      });
-    }, error: (msg) {
-      //Modal.build("error", "something went wrong please login agian", context);
-      state = CheckoutsState.error(message: "not logged in");
+  Future<void> loadCheckouts() async {
+    final books = await _getCheckouts.execute();
+    books.fold((l) {
+      if (l is ServerFailure) {
+        state = CheckoutsState.error(message: l.message ?? "");
+      } else if (l is NoDataFailure) {
+        state = const CheckoutsState.error(message: "unknown error");
+      }
+    }, (r) {
+      state = CheckoutsState.data(r);
+      debugPrint("getCheckoutsInfo success");
     });
   }
 
   Future<Checkout?> getCheckoutByBookId(
       String id, UserState user, BuildContext context) async {
+    return user.when(
+        notLoggedIn: () {
+          return null;
+        },
+        loggedIn: (data) async {
+          final result = await _getCheckout.execute(id, data.token);
+          return result.fold((l) => null, (r) => r);
+        },
+        error: (msg) => null);
+  }
+
+  Future<Either<String, void>> borrow(
+      Book book, BuildContext context, UserState user) async {
     return user.when(notLoggedIn: () {
-      return null;
+      //Modal.buildWithRedirect("로그인 되어 있지 않음", "책을 대출하시려먼 먼저 로그인을 해 주세요","/login", "로그인하러 가기", context);
+      return left("please login");
     }, loggedIn: (data) async {
-      final result = await getCheckout.execute(id, data.token);
-      return result.fold((l)=>null, (r) =>r);
-    }, error: (msg) => null);
+      final result = await _borrowBook.execute(book, data.token);
+      return result.fold((l) {
+        if (l is ServerFailure) {
+          //Modal.build("error",l.message ?? "server error please try again later", context);
+          return left(l.message ?? "server error please try again later");
+        } else if (l is NoDataFailure) {
+          //Modal.build("error", "no such book found", context);
+          return left("no such book found");
+        } else if (l is UnauthorizedFailure) {
+          //Modal.build("not logged in", "please login first", context);
+          return left("please login");
+        }
+        // Modal.build("error", "something went wrong please login agian", context);
+        return left("unknown error");
+      }, (r) {
+        debugPrint("borrow success");
+        state = CheckoutsState.data(r);
+        return const Right(null);
+      });
+    }, error: (msg) {
+      Modal.build("error", "something went wrong please login agian", context);
+      return left("something went wrong please login agian");
+    });
+  }
+
+  Future<Either<String, void>> returnBook(
+      Book book, BuildContext context) async {
+    final result = await _returnBook.execute(book);
+    return result.fold((l) {
+      if (l is ServerFailure) {
+        Modal.build("error", l.message ?? "server error please try again later",
+            context);
+        return left(l.message ?? "server error please try again later");
+      } else if (l is NoDataFailure) {
+        Modal.build("error", "no such book found", context);
+        return left("no such book found");
+      } else if (l is UnauthorizedFailure) {
+        Modal.build("not logged in", "please login first", context);
+        return left("please login");
+      }
+      Modal.build("error", "something went wrong please login agian", context);
+      return left("unknown error");
+    }, (r) {
+      debugPrint("getUserInfo success");
+      state = CheckoutsState.data(r);
+      return Right(null);
+    });
   }
 }
 
@@ -134,6 +153,6 @@ final checkoutsListState =
   return CheckoutsStateNotifier(ref);
 });
 
-final chekcoutsListModel = Provider<CheckoutsStateNotifier>((ref) {
+final checkcoutsListModel = Provider<CheckoutsStateNotifier>((ref) {
   return ref.watch(checkoutsListState.notifier);
 });

@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_library_app/core/core.dart';
@@ -51,7 +52,7 @@ class UserStateNotifier extends StateNotifier<UserState> {
     logoutUseCase.execute();
   }
 
-  Future<void> signup(SignupParams signupParams) async {
+  Future<Either<Failure, User>> signup(SignupParams signupParams) async {
     state = const UserState.notLoggedIn();
 
     final user = await postSignupUseCase.execute(signupParams);
@@ -64,6 +65,7 @@ class UserStateNotifier extends StateNotifier<UserState> {
       state = UserState.loggedIn(r);
       debugPrint("Succes");
     });
+    return user;
   }
 
   Future<void> store() async {

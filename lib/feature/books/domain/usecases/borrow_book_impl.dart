@@ -7,7 +7,7 @@ class BorrowBookUseCaseImpl extends BorrowBookUseCase {
   final BooksRepository booksRepository;
 
   @override
-  Future<Either<Failure,Book>> execute(Book book, String auth) async {
+  Future<Either<Failure,Checkouts>> execute(Book book, String auth) async {
     return booksRepository.borrowBook(book, auth);
   }
 }

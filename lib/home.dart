@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
+  
 
   @override
   Widget build(BuildContext context) {
@@ -15,14 +16,14 @@ class Home extends StatelessWidget {
         children: [
           FilledButton(
               onPressed: () {
-                context.go("/books");
+                context.push("/books");
               },
               child: const Text("book list")),
           FilledButton(
               onPressed: () {
-                context.go("/users");
+                context.push("/users");
               },
-              child: const Text("users"))
+              child: const Text("users")),
         ],
       ),
     );

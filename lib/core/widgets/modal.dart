@@ -45,7 +45,7 @@ class Modal {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: const Text('Close'),
+                    child: const Text('닫기'),
                   ),
                 ],
               ),
@@ -97,9 +97,14 @@ class Modal {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("닫기")),
+                  TextButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      context.push(url);
+                      context.go(url);
                     },
                     child: Text(buttonText),
                   ),

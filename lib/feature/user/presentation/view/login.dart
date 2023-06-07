@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_library_app/core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_library_app/feature/user/user.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -19,7 +21,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final FocusNode _passwordFocusNode = FocusNode();
   late final usermodel = ref.read(userModel);
   late final user = ref.watch(userState);
-  final url = Uri.http('192.168.0.26:8000', 'api/user/login');
 
   @override
   void initState() {
@@ -61,7 +62,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     });
   }
 
-  _submit() async {
+  _submit(context) async {
     bool flag = false;
     if (email.text == "") {
       flag = true;
@@ -85,64 +86,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         loggedIn: (data) async {
           debugPrint("user");
           await usermodel.store();
+          Navigator.pop(context);
         },
         error: (error) {
-          _buildDialog("error", error);
+          Modal.build("error", error, context);
         });
-  }
-
-  _buildDialog(title, msg) {
-    return showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => Dialog(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 24,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    msg,
-                    style: const TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 15),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Close'),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   @override
@@ -198,6 +146,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     ),
                   ),
                   TextField(
+                    key: Key("login_email"),
                     focusNode: _emailFocusNode,
                     style: TextStyle(
                       color: theme.colorScheme.onPrimaryContainer,
@@ -217,6 +166,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     height: 17,
                   ),
                   TextField(
+                    key: Key("login_password"),
                     focusNode: _passwordFocusNode,
                     style: TextStyle(
                       color: theme.colorScheme.onPrimaryContainer,
@@ -236,7 +186,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     height: 50,
                   ),
                   FilledButton(
-                    onPressed: _submit,
+                    onPressed: () {
+                      _submit(context);
+                    },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size.fromHeight(60),
                     ),
@@ -249,8 +201,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ),
                     ),
                   ),
-                  //ElevatedButton(onPressed: checkToken, child: Text("check token")),
-                  Text(text),
+                  TextButton(
+                      onPressed: () {
+                        context.go("/signup");
+                      },
+                      child: Text("아직 화원이 아닌신가요? 회원가입하기"))
                 ]),
               ),
             );

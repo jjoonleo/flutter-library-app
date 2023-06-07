@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_library_app/feature/user/user.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../core.dart';
 
@@ -38,6 +40,8 @@ class DioClient {
     required ResponseConverter<T> converter,
   }) async {
     try {
+      const storage = FlutterSecureStorage();
+      auth = await storage.read(key: "token");
       final response = await _dio.get(url,
           queryParameters: queryParameters,
           options: Options(
@@ -60,6 +64,8 @@ class DioClient {
     } on DioError catch (e) {
       if (e.response?.statusCode == 502) {
         return Left(ServerFailure("502 Bad Gateway"));
+      } else if (e.response?.statusCode == 401) {
+        return Left(UnauthorizedFailure());
       }
       return Left(
         ServerFailure(
@@ -76,6 +82,8 @@ class DioClient {
     required ResponseConverter<T> converter,
   }) async {
     try {
+      const storage = FlutterSecureStorage();
+      auth = await storage.read(key: "token");
       final response = await _dio.post(url,
           data: data,
           options: Options(

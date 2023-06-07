@@ -1,6 +1,7 @@
-
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_library_app/core/core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter_library_app/feature/user/user.dart';
@@ -13,11 +14,15 @@ class SignupPage extends ConsumerStatefulWidget {
 }
 
 class _SignupPageState extends ConsumerState<SignupPage> {
+  late final _userModel = ref.read(userModel);
   final _formKey = GlobalKey<FormBuilderState>();
   List<int> gradeOptions = List.generate(3, (index) => index + 1);
   List<int> classroomOptions = List.generate(11, (index) => index + 1);
   List<int> numberOptions = List.generate(40, (index) => index + 1);
 
+  int? grade;
+  int? number;
+  int? classroom;
   late final usermodel = ref.read(userModel);
   late final user = ref.watch(userState);
 
@@ -25,33 +30,39 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     content: Center(child: Text('학번을 입력하세요.')),
   );
 
-  final url = Uri.http('192.168.0.26:8000', 'api/user/signup');
-
 // Find the ScaffoldMessenger in the widget tree
 // and use it to show a SnackBar.
 
   _submit() async {
+    debugPrint(grade.toString());
     debugPrint(_formKey.currentState?.validate().toString());
-    if (_formKey.currentState!.fields["number"]?.value == null ||
-        _formKey.currentState!.fields["classroom"]?.value == null ||
-        _formKey.currentState!.fields["grade"]?.value == null) {
+    if (number == null || classroom == null || grade == null) {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
     }
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       debugPrint(_formKey.currentState?.value.toString());
     } else {
       debugPrint(_formKey.currentState?.value.toString());
       debugPrint('validation failed');
+      return;
     }
 
-    usermodel.signup(SignupParams(
+    Either<Failure, User> result = await usermodel.signup(SignupParams(
       email: _formKey.currentState!.fields["email"]!.value.toString(),
       password: _formKey.currentState!.fields["password"]!.value.toString(),
       name: _formKey.currentState!.fields["name"]!.value.toString(),
-      grade: _formKey.currentState!.fields["grade"]!.value.toString(),
-      classroom: _formKey.currentState!.fields["classroom"]!.value.toString(),
-      number: _formKey.currentState!.fields["number"]!.value.toString(),
+      grade: grade.toString(),
+      classroom: classroom.toString(),
+      number: number.toString(),
     ));
+    result.fold((l) {
+      Modal.build("에러", l.toString(), context);
+    }, (r) {
+      Navigator.pop(context);
+      Modal.build("회원가입 완료", "회원가입이 완료 되었습니다.", context);
+      _userModel.store();
+    });
   }
 
   @override
@@ -82,9 +93,13 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                   width: 20,
                                 ),
                                 Dropdown(
-                                    name: "grade",
-                                    options: gradeOptions,
-                                    width: 50),
+                                  name: "grade",
+                                  options: gradeOptions,
+                                  width: 50,
+                                  callback: (value) {
+                                    grade = value;
+                                  },
+                                ),
                                 const Text("학년"),
                                 const SizedBox(
                                   width: 15,
@@ -92,7 +107,10 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                 Dropdown(
                                     name: "classroom",
                                     options: classroomOptions,
-                                    width: 50),
+                                    width: 50,
+                                    callback: (value) {
+                                      classroom = value;
+                                    }),
                                 const Text("반"),
                                 const SizedBox(
                                   width: 15,
@@ -100,7 +118,10 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                                 Dropdown(
                                     name: "number",
                                     options: numberOptions,
-                                    width: 50),
+                                    width: 50,
+                                    callback: (value) {
+                                      number = value;
+                                    }),
                                 const Text("번"),
                               ],
                             ),
@@ -163,7 +184,8 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                             height: 20,
                             width: double.infinity,
                           ),
-                          FilledButton(onPressed: _submit, child: const Text("test")),
+                          FilledButton(
+                              onPressed: _submit, child: const Text("signup")),
                         ],
                       ))));
         }),

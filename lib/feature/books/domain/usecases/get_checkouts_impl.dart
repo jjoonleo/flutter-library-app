@@ -3,9 +3,9 @@ import 'package:flutter_library_app/core/core.dart';
 import 'package:flutter_library_app/feature/books/books.dart';
 
 class GetCheckoutsUseCaseImpl extends GetCheckoutsUseCase {
-  GetCheckoutsUseCaseImpl(this.checkoutsRepository);
-  final CheckoutsRepository checkoutsRepository;
+  GetCheckoutsUseCaseImpl(this.booksRepository);
+  final BooksRepository booksRepository;
 
   @override
-  Future<Either<Failure,Checkouts>> execute(String auth) => checkoutsRepository.loadCheckouts(auth);
+  Future<Either<Failure,Checkouts>> execute() => booksRepository.loadCheckouts();
 }

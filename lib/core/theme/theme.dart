@@ -4,7 +4,7 @@ import 'package:material_color_utilities/material_color_utilities.dart';
 @immutable
 class LibraryTheme extends ThemeExtension<LibraryTheme> {
   const LibraryTheme({
-    this.primaryColor = const Color(0xff6750A4),
+    this.primaryColor = const Color.fromRGBO(205, 97, 142, 1),
   });
 
   final Color primaryColor;
@@ -46,12 +46,11 @@ class LibraryTheme extends ThemeExtension<LibraryTheme> {
             fontWeight: FontWeight.w500,
           ),
           headlineLarge: TextStyle(
-              fontSize: 42,
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onBackground,
-              letterSpacing: 5,
-          )
-          ),
+            fontSize: 42,
+            fontWeight: FontWeight.bold,
+            color: colorScheme.onBackground,
+            letterSpacing: 5,
+          )),
     );
   }
 

@@ -11,37 +11,45 @@ class GetCheckouts extends ConsumerStatefulWidget {
 }
 
 class _GetCheckoutsState extends ConsumerState<GetCheckouts> {
+  late final _checkoutModel = ref.read(checkcoutsListModel);
+  final today = DateTime.now();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _checkoutModel.loadCheckouts());
+  }
+
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userState);
     final checkoutsState = ref.watch(checkoutsListState);
-    final checkoutsModel = ref.read(chekcoutsListModel);
+    debugPrint("getCheckout rendered");
 
-    return Column(
-      children: [
-        FilledButton(
-            onPressed: () {
-              checkoutsModel.loadCheckouts(user);
-            },
-            child: Text("load checkouts")),
-        checkoutsState.when(
-            loading: () => Text("loading"),
-            data: (checkouts) {
-              
-              return SizedBox(
-                height: 600,
-                child: ListView.builder(
-                    itemCount: checkouts.values.length,
-                    itemBuilder: (itemcontext, index) {
-                      final checkout = checkouts.values[index];
-                      return BookTile(id: checkout.book);
-                    }),
-              );
-            },
-            error: (_) {
-              return Text("error");
-            })
-      ],
-    );
+    return checkoutsState.when(
+        loading: () => Text("loading"),
+        data: (checkouts) {
+          return Expanded(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                await _checkoutModel.loadCheckouts();
+              },
+              child: ListView.builder(
+                  itemCount: checkouts.values.length,
+                  itemExtent: 150,
+                  itemBuilder: (itemcontext, index) {
+                    final checkout = checkouts.values[index];
+
+                    debugPrint(
+                        checkout.dueDate.difference(today).inDays.toString());
+                    return BookTile(
+                      id: checkout.book,
+                      dueDate: checkout.dueDate,
+                    );
+                  }),
+            ),
+          );
+        },
+        error: (_) {
+          return Text("error");
+        });
   }
 }

@@ -3,10 +3,15 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class Dropdown extends StatefulWidget {
   const Dropdown(
-      {super.key, required this.name, required this.options, this.width});
+      {super.key,
+      required this.name,
+      required this.options,
+      this.width,
+      required this.callback});
 
   final String name;
   final List<int> options;
+  final Function callback;
   final double? width;
 
   @override
@@ -18,18 +23,19 @@ class _DropdownState extends State<Dropdown> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(widget.name);
     return SizedBox(
       width: widget.width ?? 50,
       child: FormBuilderDropdown<int>(
-        name: widget.name,
+        name: "grade",
         decoration: InputDecoration(
           labelText: _value == null ? '선택' : null,
         ),
         onChanged: (value) {
           setState(() {
             _value = value?.toInt();
-            debugPrint(_value.toString());
           });
+          widget.callback(_value);
         },
         items: widget.options
             .map((value) => DropdownMenuItem(

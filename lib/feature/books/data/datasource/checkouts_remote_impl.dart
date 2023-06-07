@@ -9,10 +9,9 @@ class CheckoutsRemoteDatasourceImpl implements CheckoutsRemoteDatasource {
   CheckoutsRemoteDatasourceImpl(this._client);
 
   @override
-  Future<Either<Failure, Checkouts>> load(String auth) async {
+  Future<Either<Failure, Checkouts>> load() async {
     final response = await _client.getRequest(
       APIList.loadCheckouts,
-      auth: auth,
       converter: (response) =>
           Checkouts.fromJson(response as Map<String, dynamic>),
     );

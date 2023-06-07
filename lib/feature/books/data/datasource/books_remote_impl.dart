@@ -46,11 +46,22 @@ class BooksRemoteDatasourceImpl implements BooksRemoteDatasource {
   }
 
   @override
-  Future<Either<Failure, Book>> borrowBook(Book book, String auth) async {
+  Future<Either<Failure, Checkout>> borrowBook(Book book, String auth) async {
     final response = await _client.getRequest(
       APIList.borrowBook,
       queryParameters: {"id": book.id},
       auth: auth,
+      converter: (response) => Checkout.fromJson(response as Map<String, dynamic>),
+    );
+
+    return response;
+  }
+
+  @override
+  Future<Either<Failure, Book>> returnBook(Book book) async {
+    final response = await _client.getRequest(
+      APIList.returnBook,
+      queryParameters: {"id": book.id},
       converter: (response) => Book.fromJson(response as Map<String, dynamic>),
     );
 

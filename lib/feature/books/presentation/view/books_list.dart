@@ -44,12 +44,11 @@ class _BooksListState extends ConsumerState<BooksList> {
               child: IconButton.outlined(
                   onPressed: () {
                     user.when(notLoggedIn: () {
-                      context.push("/users/login");
+                      context.push("/login");
                     }, loggedIn: (data) {
                       context.push("/users");
                     }, error: (data) {
-                      Modal.build(
-                          "에러", "알 수 없는 에러가 발생하였습니다. 관리자에게 문의해 주세요", context);
+                      context.push("/login");
                     });
                   },
                   icon: Icon(
@@ -67,6 +66,7 @@ class _BooksListState extends ConsumerState<BooksList> {
                 child: RefreshIndicator(
                   onRefresh: _reloadBooks,
                   child: ListView.builder(
+                    itemExtent: 150,
                     itemCount: books.values.length,
                     itemBuilder: (itemcontext, index) {
                       final book = books.values[index];
@@ -83,14 +83,14 @@ class _BooksListState extends ConsumerState<BooksList> {
           return Container();
         }),
       ]),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.go("/books/add");
-        },
-        icon: const Icon(Icons.add),
-        label: const Text("Add Book"),
-        tooltip: "Add Book",
-      ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () {
+      //     context.go("/books/add");
+      //   },
+      //   icon: const Icon(Icons.add),
+      //   label: const Text("Add Book"),
+      //   tooltip: "Add Book",
+      // ),
     );
   }
 }
